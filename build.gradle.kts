@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.21"
     application
+    id("java-library")
 }
 
 group = "org.example"
@@ -24,4 +25,10 @@ kotlin {
 
 application {
     mainClass.set("MainKt")
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }

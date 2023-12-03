@@ -8,7 +8,7 @@ fun main() {
     println("The sum of all number combinations is: ${findSumOfNumbers(fileLInes)}")
 }
 
-fun findSumOfNumbers(fileLines: List<String>) =
+private fun findSumOfNumbers(fileLines: List<String>) =
     fileLines.sumOf { line ->
         var temp = line //These 2 lines are the solution to second challenge of day 1
         NUMBERS.entries.map { temp = temp.replace(it.name, it.digit, true) }

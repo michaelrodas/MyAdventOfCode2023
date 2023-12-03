@@ -11,14 +11,17 @@ import java.util.Objects;
 
 public class FileLineReader {
 
-    public List<String> getFileLines(String fileName) {
+    private FileLineReader() { // Intentionally hiding the constructor
+    }
+
+    public static List<String> getFileLines(String fileName) {
         try {
-            URL fileUrl = getClass().getResource("/" + fileName);
+            URL fileUrl = FileLineReader.class.getResource("/" + fileName);
             Path filePath = Paths.get(Objects.requireNonNull(fileUrl).toURI());
             return Files.readAllLines(filePath);
-//            System.out.println("The amount of lines is: " + fileLines.size());
         } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("There was an error reading the file: " + e);
         }
     }
+
 }

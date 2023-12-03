@@ -3,8 +3,7 @@ package challenges
 import java.io.File
 
 
-fun main(args: Array<String>) {
-
+fun main() {
     val fileLInes = File(ClassLoader.getSystemResource("inputDay1.txt").path).useLines { it.toList() }
     println("The sum of all number combinations is: ${findSumOfNumbers(fileLInes)}")
 }

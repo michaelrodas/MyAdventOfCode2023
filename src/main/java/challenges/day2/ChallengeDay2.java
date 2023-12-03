@@ -5,6 +5,7 @@ import challenges.util.FileLineReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static challenges.day2.ChallengeDay2.Colours.*;
 
@@ -13,14 +14,13 @@ public class ChallengeDay2 {
     public static void main(String[] args) {
         var challengeDay2 = new ChallengeDay2();
         var games = FileLineReader.getFileLines("inputDay2.txt");
-        System.out.println("The sum of all possible games is: " + challengeDay2.findSolution2(games));
+        Logger.getAnonymousLogger().info("The sum of all possible games is: " + challengeDay2.findSolution2(games));
     }
 
     private int findSolution2(List<String> games) {
         var sumOfPossibleGames = 0;
         for (var game : games) {
             var gameComponents = game.split(":"); // ["Game 1"]["1 blue; 2 red, 6 green"]
-            var gameIdentifier = Integer.valueOf(gameComponents[0].substring(5)); // "1"
             var handfuls = gameComponents[1].split(";"); // ["1 blue"] ["2 red, 6 green"]
 
             sumOfPossibleGames += getPowerOfGame(handfuls);
@@ -42,20 +42,15 @@ public class ChallengeDay2 {
                 var cubeColour = Colours.valueOf(cubeDetails[1].toUpperCase());
 
                 switch (cubeColour) {
-                    case BLUE:
-                        blueCubes.add(Integer.valueOf(cubeAmount));
-                        break;
-                    case RED:
-                        redCubes.add(Integer.valueOf(cubeAmount));
-                        break;
-                    case GREEN:
-                        greenCubes.add(Integer.valueOf(cubeAmount));
-                        break;
+                    case BLUE -> blueCubes.add(Integer.valueOf(cubeAmount));
+                    case RED -> redCubes.add(Integer.valueOf(cubeAmount));
+                    case GREEN -> greenCubes.add(Integer.valueOf(cubeAmount));
                 }
             }
         }
 
         var maxBlue = blueCubes.stream().max(Comparator.naturalOrder());
+        //Another possibility for obtaining max...
 //        blueCubes.sort(Comparator.naturalOrder());
 //        blueCubes.get(blueCubes.size()-1);
         var maxRed = redCubes.stream().max(Comparator.naturalOrder());
@@ -100,17 +95,11 @@ public class ChallengeDay2 {
             var cubeAmount = cubeDetails[0];
             var cubeColour = Colours.valueOf(cubeDetails[1].toUpperCase());
 
-            switch (cubeColour) {
-                case BLUE:
-                    isValid = Integer.valueOf(cubeAmount) <= BLUE.maxValue;
-                    break;
-                case RED:
-                    isValid = Integer.valueOf(cubeAmount) <= RED.maxValue;
-                    break;
-                case GREEN:
-                    isValid = Integer.valueOf(cubeAmount) <= GREEN.maxValue;
-                    break;
-            }
+            isValid = switch (cubeColour) {
+                case BLUE -> Integer.parseInt(cubeAmount) <= BLUE.maxValue;
+                case RED -> Integer.parseInt(cubeAmount) <= RED.maxValue;
+                case GREEN -> Integer.parseInt(cubeAmount) <= GREEN.maxValue;
+            };
 
             if (!isValid) {
                 break;

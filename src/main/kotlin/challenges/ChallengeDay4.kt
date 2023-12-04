@@ -19,10 +19,10 @@ private fun findSolutionPart1(fileLines: List<String>): Int {
         myNumbers.forEach { myNumber ->
             if (winningNumbers.contains(myNumber)) winningNumbersFound++
         }
-//228967
-        if (winningNumbersFound == 1) {
-            winningNumbersFound
-        } else if (winningNumbersFound > 1)
+
+        if (winningNumbersFound == 0)
+            0
+        else
             2.0.pow(winningNumbersFound - 1).toInt()
     }
 }

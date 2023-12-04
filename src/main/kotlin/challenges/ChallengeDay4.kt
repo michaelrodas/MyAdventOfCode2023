@@ -24,7 +24,6 @@ private fun findSolutionPart1(fileLines: List<String>): Int {
             winningNumbersFound
         } else if (winningNumbersFound > 1)
             2.0.pow(winningNumbersFound - 1).toInt()
-        else 0
     }
 }
 

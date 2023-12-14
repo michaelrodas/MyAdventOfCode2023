@@ -4,22 +4,96 @@ import java.io.File
 
 fun main() {
     val fileLines = File(ClassLoader.getSystemResource("inputDay14.txt").path).useLines { it.toList() }
-    println("The solution is: ${findSolution(fileLines)}")
+    println("The solution is: ${findSolution2(fileLines)}")
+}
+
+fun findSolution2(fileLines: List<String>): Int {
+    val rocksPlatform = fileLines.map { it.toCharArray() }.toTypedArray()
+    val results = mutableListOf<Int>()
+
+    for (i in 1..(1000000000%94)) {
+        rocksPlatform.forEachIndexed { rowIndex, chars ->
+            chars.forEachIndexed { columnIndex, symbol ->
+                if (rowIndex >= 0 && rocksPlatform[rowIndex][columnIndex] == 'O') {
+                    moveZeroToNorth(rowIndex, rocksPlatform, columnIndex)
+                }
+            }
+        }
+        rocksPlatform.forEachIndexed { rowIndex, chars ->
+            chars.forEachIndexed { columnIndex, symbol ->
+                if (rowIndex >= 0 && rocksPlatform[rowIndex][columnIndex] == 'O') {
+                    moveZeroToWest(rowIndex, rocksPlatform, columnIndex)
+                }
+            }
+        }
+        for (row in rocksPlatform.indices.reversed()) {
+            for (column in rocksPlatform[row].indices.reversed()) {
+                if (rocksPlatform[row][column] == 'O') {
+                    moveZeroToSouth(row, rocksPlatform, column)
+                }
+            }
+        }
+        for (row in rocksPlatform.indices.reversed()) {
+            for (column in rocksPlatform[row].indices.reversed()) {
+                if (rocksPlatform[row][column] == 'O') {
+                    moveZeroToEast(row, rocksPlatform, column)
+                }
+            }
+        }
+        results.add(rocksPlatform.mapIndexed { rowIndex, chars ->
+            chars.count { symbol -> symbol == 'O' } * (rocksPlatform.size - rowIndex)
+        }.sum())
+    }
+println(results.indexOf(100581))
+
+    return rocksPlatform.mapIndexed { rowIndex, chars ->
+        chars.count { symbol -> symbol == 'O' } * (rocksPlatform.size - rowIndex)
+    }.sum()
 }
 
 fun findSolution(fileLines: List<String>): Int {
     val rocksPlatform = fileLines.map { it.toCharArray() }.toTypedArray()
 
+
     rocksPlatform.forEachIndexed { rowIndex, chars ->
         chars.forEachIndexed { columnIndex, symbol ->
-            if (rowIndex>=0 && rocksPlatform[rowIndex][columnIndex] == 'O') {
+            if (rowIndex >= 0 && rocksPlatform[rowIndex][columnIndex] == 'O') {
                 moveZeroToNorth(rowIndex, rocksPlatform, columnIndex)
             }
         }
     }
+
     return rocksPlatform.mapIndexed { rowIndex, chars ->
-        chars.count { symbol -> symbol == 'O' } * (rocksPlatform.size-rowIndex)
+        chars.count { symbol -> symbol == 'O' } * (rocksPlatform.size - rowIndex)
     }.sum()
+}
+
+fun moveZeroToEast(rowIndex: Int, rocksPlatform: Array<CharArray>, columnIndex: Int) {
+    var tempColumn = columnIndex
+    while (tempColumn + 1 <= rocksPlatform.size - 1 && rocksPlatform[rowIndex][tempColumn + 1] == '.') {
+        rocksPlatform[rowIndex][tempColumn + 1] = 'O'
+        rocksPlatform[rowIndex][tempColumn] = '.'
+        tempColumn++
+    }
+
+}
+
+fun moveZeroToSouth(rowIndex: Int, rocksPlatform: Array<CharArray>, columnIndex: Int) {
+    var tempRow = rowIndex
+    while (tempRow + 1 <= rocksPlatform.size - 1 && rocksPlatform[tempRow + 1][columnIndex] == '.') {
+        rocksPlatform[tempRow + 1][columnIndex] = 'O'
+        rocksPlatform[tempRow][columnIndex] = '.'
+        tempRow++
+    }
+}
+
+fun moveZeroToWest(rowIndex: Int, rocksPlatform: Array<CharArray>, columnIndex: Int) {
+    var tempColumn = columnIndex
+    while (tempColumn - 1 >= 0 && rocksPlatform[rowIndex][tempColumn - 1] == '.') {
+        rocksPlatform[rowIndex][tempColumn - 1] = 'O'
+        rocksPlatform[rowIndex][tempColumn] = '.'
+        tempColumn--
+    }
 }
 
 private fun moveZeroToNorth(rowIndex: Int, rocksPlatform: Array<CharArray>, columnIndex: Int) {
@@ -84,4 +158,54 @@ private fun moveZeroToNorth(rowIndex: Int, rocksPlatform: Array<CharArray>, colu
  * The total load is the sum of the load caused by all of the rounded rocks. In this example, the total load is 136.
  *
  * Tilt the platform so that the rounded rocks all roll north. Afterward, what is the total load on the north support beams?
+ *
+ *
+ * --- Part Two ---
+ *
+ * The parabolic reflector dish deforms, but not in a way that focuses the beam. To do that, you'll need to move the rocks to the edges of the platform. Fortunately, a button on the side of the control panel labeled "spin cycle" attempts to do just that!
+ *
+ * Each cycle tilts the platform four times so that the rounded rocks roll north, then west, then south, then east. After each tilt, the rounded rocks roll as far as they can before the platform tilts in the next direction. After one cycle, the platform will have finished rolling the rounded rocks in those four directions in that order.
+ *
+ * Here's what happens in the example above after each of the first few cycles:
+ *
+ * After 1 cycle:
+ * .....#....
+ * ....#...O#
+ * ...OO##...
+ * .OO#......
+ * .....OOO#.
+ * .O#...O#.#
+ * ....O#....
+ * ......OOOO
+ * #...O###..
+ * #..OO#....
+ *
+ * After 2 cycles:
+ * .....#....
+ * ....#...O#
+ * .....##...
+ * ..O#......
+ * .....OOO#.
+ * .O#...O#.#
+ * ....O#...O
+ * .......OOO
+ * #..OO###..
+ * #.OOO#...O
+ *
+ * After 3 cycles:
+ * .....#....
+ * ....#...O#
+ * .....##...
+ * ..O#......
+ * .....OOO#.
+ * .O#...O#.#
+ * ....O#...O
+ * .......OOO
+ * #...O###.O
+ * #.OOO#...O
+ * This process should work if you leave it running long enough, but you're still worried about the north support beams. To make sure they'll survive for a while, you need to calculate the total load on the north support beams after 1000000000 cycles.
+ *
+ * In the above example, after 1000000000 cycles, the total load on the north support beams is 64.
+ *
+ * Run the spin cycle for 1000000000 cycles. Afterward, what is the total load on the north support beams?
  */

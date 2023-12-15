@@ -9,9 +9,8 @@ fun main() {
 
 fun findSolution2(fileLines: List<String>): Int {
     val rocksPlatform = fileLines.map { it.toCharArray() }.toTypedArray()
-    val results = mutableListOf<Int>()
 
-    for (i in 1..(1000000000%94)) {
+    for (i in 1..1000) {
         rocksPlatform.forEachIndexed { rowIndex, chars ->
             chars.forEachIndexed { columnIndex, symbol ->
                 if (rowIndex >= 0 && rocksPlatform[rowIndex][columnIndex] == 'O') {
@@ -40,11 +39,7 @@ fun findSolution2(fileLines: List<String>): Int {
                 }
             }
         }
-        results.add(rocksPlatform.mapIndexed { rowIndex, chars ->
-            chars.count { symbol -> symbol == 'O' } * (rocksPlatform.size - rowIndex)
-        }.sum())
     }
-println(results.indexOf(100581))
 
     return rocksPlatform.mapIndexed { rowIndex, chars ->
         chars.count { symbol -> symbol == 'O' } * (rocksPlatform.size - rowIndex)
